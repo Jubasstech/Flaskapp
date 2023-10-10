@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123456'
+app.config['MYSQL_PASSWORD'] = 'JUBass.com77@#$%'
 app.config['MYSQL_DB'] = 'myflaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
@@ -182,6 +182,7 @@ def dashboard():
         return render_template('dashboard.html', msg=msg)
     # Close connection
     cur.close()
+
 
 # Article Form Class
 class ArticleForm(Form):

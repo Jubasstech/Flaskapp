@@ -1,12 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+ <div class="jumbotron text-center" style="background-color: #8000ff;">
   <div class="jumbotron text-center">
-    <h1>Welcome To FlaskApp</h1>
-    <p class="lead">This application is built on the Python Flask framework and is the focus for the "Python Flask From Scratch" YouTube series</p>
-    {% if session.logged_in == NULL %}
-      <a href="/register" class="btn btn-primary btn-lg">Register</a>
-      <a href="/login" class="btn btn-success btn-lg">Login</a>
+    <!-- Updated: Added the image with the provided GitHub URL -->
+    <img src="https://github.com/Jubasstech/My_Flask_App/raw/master/templates/DSC_3285_1618921666612.jpg" alt="Jerome Udoh" class="img-fluid rounded-circle" width="200">
+    <h1>Welcome To My FlaskApp</h1>
+    <p class="lead">This application is built on the Python Flask framework and is the focus for the "Python Flask From Scratch" training, by Jerome Udoh</p>
+    {% if not session.get('logged_in') %}
+      <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Register</a>
+      <a href="{{ url_for('login') }}" class="btn btn-success btn-lg">Login</a>
     {% endif %}
   </div>
+</div>
 {% endblock %}
