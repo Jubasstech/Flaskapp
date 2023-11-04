@@ -4,7 +4,7 @@ from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
-
+from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 # Config MySQL
@@ -182,6 +182,81 @@ def dashboard():
         return render_template('dashboard.html', msg=msg)
     # Close connection
     cur.close()
+
+# SQLAlchemy Configuration (for Articles)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:JUBass.com77@#$%@localhost/myflaskapp'
+db = SQLAlchemy(app)
+
+# Define MySQL Models (Tags and Categories)
+class Tag:
+    @staticmethod
+    def get_all_tags():
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM tags")
+        tags = cur.fetchall()
+        cur.close()
+        return tags
+
+    @staticmethod
+    def create_tag(name):
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO tags (name) VALUES (%s)", (name,))
+        mysql.connection.commit()
+        cur.close()
+
+class Category:
+    @staticmethod
+    def get_all_categories():
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM categories")
+        categories = cur.fetchall()
+        cur.close()
+        return categories
+
+    @staticmethod
+    def create_category(name):
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO categories (name) VALUES (%s)", (name,))
+        mysql.connection.commit()
+        cur.close()
+
+# Define SQLAlchemy Model (Articles)
+class Article(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    tags = db.relationship('Tag', secondary='article_tag', backref=db.backref('articles', lazy='dynamic'))
+    categories = db.relationship('Category', secondary='article_category', backref=db.backref('articles', lazy='dynamic'))
+
+# Routes for Tags and Categories
+@app.route('/tags', methods=['GET', 'POST'])
+def tags():
+    if request.method == 'POST':
+        tag_name = request.form['tag_name']
+        Tag.create_tag(tag_name)
+    tags = Tag.get_all_tags()
+    return render_template('tags.html', tags=tags)
+
+@app.route('/categories', methods=['GET', 'POST'])
+def categories():
+    if request.method == 'POST':
+        category_name = request.form['category_name']
+        Category.create_category(category_name)
+    categories = Category.get_all_categories()
+    return render_template('categories.html', categories=categories)
+
+# Routes for Articles by Tag or Category
+@app.route('/articles_by_tag/<tag_id>')
+def articles_by_tag(tag_id):
+    tag = Tag.query.get(tag_id)
+    articles = tag.articles.all()
+    return render_template('articles_by_tag.html', tag=tag, articles=articles)
+
+@app.route('/articles_by_category/<category_id>')
+def articles_by_category(category_id):
+    category = Category.query.get(category_id)
+    articles = category.articles.all()
+    return render_template('articles_by_category.html', category=category, articles=articles)
 
 
 # Article Form Class

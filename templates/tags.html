@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container">
+    <h1>All Tags</h1>
+    <ul>
+      {% for tag in tags %}
+        <li><a href="{{ url_for('articles_by_tag', tag_id=tag.id) }}">{{ tag.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

@@ -1,10 +1,25 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>{{article.title}}</h1>
-  <small>Written by {{article.author}} on {{article.create_date}}</small>
-  <hr>
-  <div>
-    {{article.body | safe}}
+  <div class="container">
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.body }}</p>
+
+    <h2>Publication Date</h2>
+    <p>{{ article.pub_date.strftime("%B %d, %Y %H:%M:%S") }}</p>
+    
+    <h2>Comments</h2>
+    <ul>
+      {% for comment in comments %}
+        <li>{{ comment }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Related Posts</h2>
+    <ul>
+      {% for related_post in related_posts %}
+        <li><a href="{{ url_for('article', id=related_post.id) }}">{{ related_post.title }}</a></li>
+      {% endfor %}
+    </ul>
   </div>
 {% endblock %}
